@@ -1,5 +1,20 @@
 import {useState} from "react";
 
+const ls = {
+    set: (key: string, value: any) => {
+        if (typeof value === 'object') {
+            value = JSON.stringify(value);
+        }
+        localStorage.setItem(key, value);
+    },
+    get: (key: string) => {
+        const value = localStorage.getItem(key);
+        if (!value) {
+            return null;
+        }
+        return JSON.parse(value);
+    },
+}
 
 export function useLocalStorage<T>(key: string, initialValue?: T) {
     // State to store our value
@@ -10,7 +25,7 @@ export function useLocalStorage<T>(key: string, initialValue?: T) {
         }
         try {
             // Get from local storage by key
-            const item = localStorage.get(key);
+            const item = ls.get(key);
             // Parse stored json or if none return initialValue
             return item ? item : initialValue;
         } catch (error) {
@@ -30,7 +45,7 @@ export function useLocalStorage<T>(key: string, initialValue?: T) {
             setStoredValue(valueToStore);
             // Save to local storage
             if (typeof window !== "undefined") {
-                localStorage.set(key, valueToStore);
+                ls.set(key, valueToStore);
             }
         } catch (error) {
             // A more advanced implementation would handle the error case

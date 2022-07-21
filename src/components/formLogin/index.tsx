@@ -2,7 +2,9 @@ import {Box, Button, Checkbox, FormControlLabel, TextField} from "@mui/material"
 import {useForm} from "react-hook-form";
 import {useConfig} from "contexts/ConfigContext";
 import CircularProgress from '@mui/material/CircularProgress';
-import AuthService from "services/AuthService";
+import {useAuth} from "contexts/AuthContext";
+import {MouseEventHandler, SyntheticEvent} from "react";
+
 
 type FormState = {
     username: string;
@@ -10,18 +12,13 @@ type FormState = {
 }
 
 const FormLogin = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: {errors}
-    } = useForm<FormState>({defaultValues: {username: 'alex@gmail.com', password: '123456'}});
-    const {isLoading, setIsLoading} = useConfig();
+    const {register,handleSubmit,formState: {errors}} = useForm<FormState>({defaultValues: {username: 'alex@gmail.com', password: '123456'}});
+    const {isLoading} = useConfig();
+    const {signIn, setRememberMe, rememberMe} = useAuth();
 
-    const onSubmit = async ({username, password}: FormState) => {
-        setIsLoading(true);
-        const res = await AuthService.login(username, password);
-        console.log(res);
-        setIsLoading(false);
+
+    const onSubmit = ({username, password}: FormState) => {
+        signIn(username, password);
     };
 
     return isLoading ?
@@ -54,8 +51,12 @@ const FormLogin = () => {
                     helperText={errors.password?.message}
                 />
                 <FormControlLabel
-                    control={<Checkbox value="remember" color="primary"/>}
+                    control={<Checkbox color="primary"/>}
                     label="Lembrar me"
+                    value={rememberMe}
+                    onClick={(e:any) => {
+                        setRememberMe(e.target.checked)
+                    }}
                 />
                 <Button
                     type="submit"

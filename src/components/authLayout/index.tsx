@@ -1,8 +1,12 @@
 import {Grid, Paper} from "@mui/material";
-import {Outlet} from "react-router-dom";
+import {Navigate, Outlet} from "react-router-dom";
+import {useAuth} from "contexts/AuthContext";
+import React from "react";
 
 const AuthLayout = () => {
-    return (
+    const {isSignedIn} = useAuth();
+
+    return isSignedIn ? <Navigate to={"/painel/home"}/> :(
         <>
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <Grid
