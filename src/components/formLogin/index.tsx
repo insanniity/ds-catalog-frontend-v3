@@ -3,7 +3,6 @@ import {useForm} from "react-hook-form";
 import {useConfig} from "contexts/ConfigContext";
 import CircularProgress from '@mui/material/CircularProgress';
 import {useAuth} from "contexts/AuthContext";
-import {MouseEventHandler, SyntheticEvent} from "react";
 
 
 type FormState = {

@@ -3,6 +3,7 @@ import React from 'react';
 import {Navigate, Route, Routes} from "react-router-dom";
 import AuthLayout from "components/authLayout";
 import Home from "pages/painel/home";
+import PainelLayout from "components/painelLayout";
 
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
                 <Route index element={<Navigate to={"/auth/login"}/>}/>
                 <Route path="login" element={<Login/>}/>
             </Route>
-            <Route path="/painel">
+            <Route path="/painel" element={<PainelLayout />}>
                 <Route index element={<Navigate to={"/painel/home"}/>}/>
                 <Route path="home" element={<Home/>}/>
             </Route>

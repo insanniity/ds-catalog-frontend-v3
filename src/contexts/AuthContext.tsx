@@ -1,9 +1,10 @@
 import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from "react";
-import {LoginResponse, TokenDecoded} from "types/auth";
+import {Authorities, LoginResponse, TokenDecoded} from "types/auth";
 import {useLocalStorage} from "hooks/useLocalStorage";
 import {AUTH_KEY, REMEMBER_ME_KEY} from "constants/auth";
 import useAuthService from "services/AuthService";
 import {useConfig} from "contexts/ConfigContext";
+import jwt_decode from "jwt-decode";
 
 
 type Props = {
@@ -17,6 +18,7 @@ export type AuthContext = {
     name: string;
     rememberMe: boolean;
     setRememberMe: (rememberMe: boolean) => void;
+    hasAnyRoles: (roles: Authorities[]) => boolean;
 }
 
 
@@ -26,11 +28,20 @@ const AuthContextType = createContext<AuthContext>({} as AuthContext);
 const AuthProvider = ({children}: Props) => {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [authData, setAuthData] = useLocalStorage<LoginResponse>(AUTH_KEY);
-    const [rememberMe, setRememberMe] = useLocalStorage<boolean>(REMEMBER_ME_KEY, false);
-    const {verifyToken, refreshToken, login} = useAuthService();
+    const [rememberMe, setRememberMe] = useLocalStorage<boolean>(REMEMBER_ME_KEY);
+    const {refreshToken, login} = useAuthService();
     const [name, setName] = useState('')
     const {setIsLoading} = useConfig();
 
+
+    const hasAnyRoles = (roles:Authorities[]):boolean => {
+        const tokenData = jwt_decode<TokenDecoded>(authData.access_token);
+        if(roles.length === 0 ) return false;
+        if(tokenData !== undefined){
+            return roles.some(role => tokenData.authorities.includes(role));
+        }
+        return false;
+    }
 
     const signIn = async (email: string, password: string) => {
         setIsLoading(true);
@@ -49,30 +60,24 @@ const AuthProvider = ({children}: Props) => {
         setIsLoading(false);
     }, [setAuthData, setIsLoading])
 
-    useEffect(() => {
-        if (authData && authData.access_token  && !isSignedIn) {
-            setIsLoading(true);
-            verifyToken(authData.access_token)
-                .then(async (res: TokenDecoded) => {
-                    if (res.exp > Date.now() / 1000) {
-                        setIsSignedIn(true);
-                        setName(authData.name);
-                    } else {
-                        await signOut();
-                    }
-                })
-                .catch(async () => {
-                    await signOut();
-                })
-                .finally(() => {
-                    setIsLoading(false);
-            });
+    const verifyAuthentication = useCallback(() => {
+        if (authData.access_token) {
+            const {exp} = jwt_decode<TokenDecoded>(authData.access_token);
+            return (exp * 1000 > Date.now());
         }
-    }, [authData, isSignedIn, setIsLoading, signOut, verifyToken]);
+        return false;
+    }, [authData])
+
+    useEffect(() => {
+        if (authData && authData.access_token && !isSignedIn) {
+            setIsSignedIn(verifyAuthentication());
+            setName(authData.name);
+        }
+    }, [authData, isSignedIn, setIsLoading, verifyAuthentication]);
 
 
     useEffect(() => {
-        if (rememberMe && authData) {
+        if (rememberMe && authData && (authData.expires_in * 1000 > (Date.now()-86400))) {
             refreshToken(authData.refresh_token)
                 .then(res => {
                     setAuthData(res);
@@ -81,13 +86,13 @@ const AuthProvider = ({children}: Props) => {
                     await signOut();
                 });
         }
-    }, [authData, refreshToken, rememberMe, setAuthData, signOut]);
+    }, [authData, refreshToken, rememberMe, setAuthData, signOut, verifyAuthentication]);
 
 
 
 
     return (
-        <AuthContextType.Provider value={{signIn, signOut, isSignedIn, name, rememberMe, setRememberMe}}>
+        <AuthContextType.Provider value={{signIn, signOut, isSignedIn, name, rememberMe, setRememberMe, hasAnyRoles}}>
             {children}
         </AuthContextType.Provider>
     );
