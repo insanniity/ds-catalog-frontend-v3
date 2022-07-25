@@ -3,26 +3,28 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import Copyright from "components/copyrights";
-import {Outlet} from "react-router-dom";
+import {Navigate, Outlet} from "react-router-dom";
 import {AppBar, Drawer} from "assets/styled"
 import SideMenu from "components/sideMenu";
 import {useConfig} from "contexts/ConfigContext";
-import MyLoading from "components/MyLoading";
+import MyLoading from "components/myLoading";
+import AuthMenu from "components/authMenu";
+import {useAuth} from "contexts/AuthContext";
 
 
 const PainelLayout = () => {
     const {isOpen, setIsOpen, menuAtivo} = useConfig();
+    const {verifyAuthentication} = useAuth();
+
     const toggleDrawer = () => {
         setIsOpen(!isOpen);
     };
 
-    return (
+    return !verifyAuthentication() ? <Navigate to={"/auth/login"} replace/> :(
         <Box sx={{ display: 'flex' }}>
             <AppBar position="absolute" open={isOpen}>
                 <Toolbar
@@ -51,11 +53,7 @@ const PainelLayout = () => {
                     >
                         {menuAtivo}
                     </Typography>
-                    <IconButton color="inherit">
-                        <Badge badgeContent={4} color="secondary">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
+                    <AuthMenu />
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={isOpen}>

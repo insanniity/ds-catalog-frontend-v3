@@ -12,9 +12,9 @@ import AuthProvider from "contexts/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-    <ConfigProvider>
-        <AuthProvider>
-            <BrowserRouter>
+    <BrowserRouter>
+        <ConfigProvider>
+            <AuthProvider>
                 <ThemeProvider theme={theme}>
                     <CssBaseline/>
                     <App/>
@@ -31,7 +31,7 @@ root.render(
                         theme={'colored'}
                     />
                 </ThemeProvider>
-            </BrowserRouter>
-        </AuthProvider>
-    </ConfigProvider>
+            </AuthProvider>
+        </ConfigProvider>
+    </BrowserRouter>
 );

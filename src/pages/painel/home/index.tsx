@@ -1,9 +1,12 @@
+import {Grid, Paper, Typography} from "@mui/material";
 
 const Home = () => {
     return (
-        <div>
-        <h1>Home</h1>
-        </div>
+        <Grid item xs={12}>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                <Typography variant={'h3'} >Dashboard</Typography>
+            </Paper>
+        </Grid>
     );
 }
 

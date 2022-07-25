@@ -5,6 +5,7 @@ import {AUTH_KEY, REMEMBER_ME_KEY} from "constants/auth";
 import useAuthService from "services/AuthService";
 import {useConfig} from "contexts/ConfigContext";
 import jwt_decode from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 
 type Props = {
@@ -14,11 +15,12 @@ type Props = {
 export type AuthContext = {
     signIn: (email: string, password: string) => void;
     signOut: () => void;
-    isSignedIn: boolean;
+    verifyAuthentication: () => boolean;
     name: string;
     rememberMe: boolean;
     setRememberMe: (rememberMe: boolean) => void;
     hasAnyRoles: (roles: Authorities[]) => boolean;
+    authData: LoginResponse;
 }
 
 
@@ -26,13 +28,12 @@ const AuthContextType = createContext<AuthContext>({} as AuthContext);
 
 
 const AuthProvider = ({children}: Props) => {
-    const [isSignedIn, setIsSignedIn] = useState(false);
     const [authData, setAuthData] = useLocalStorage<LoginResponse>(AUTH_KEY);
     const [rememberMe, setRememberMe] = useLocalStorage<boolean>(REMEMBER_ME_KEY);
     const {refreshToken, login} = useAuthService();
     const [name, setName] = useState('')
     const {setIsLoading} = useConfig();
-
+    const navigate = useNavigate();
 
     const hasAnyRoles = (roles:Authorities[]):boolean => {
         const tokenData = jwt_decode<TokenDecoded>(authData.access_token);
@@ -48,33 +49,37 @@ const AuthProvider = ({children}: Props) => {
         const res = await login(email, password);
         setAuthData(res);
         setName(res.name);
-        setIsSignedIn(true);
         setIsLoading(false);
+        navigate('/painel/home');
     }
 
     const signOut = useCallback(async () => {
         setIsLoading(true);
         setAuthData({} as LoginResponse);
         setName('');
-        setIsSignedIn(false);
         setIsLoading(false);
-    }, [setAuthData, setIsLoading])
+        navigate('/auth/login');
+    }, [navigate, setAuthData, setIsLoading])
 
-    const verifyAuthentication = useCallback(() => {
+    const verifyAuthentication = ():boolean => {
         if (authData.access_token) {
             const {exp} = jwt_decode<TokenDecoded>(authData.access_token);
             return (exp * 1000 > Date.now());
         }
         return false;
-    }, [authData])
+    }
 
     useEffect(() => {
-        if (authData && authData.access_token && !isSignedIn) {
-            setIsSignedIn(verifyAuthentication());
+        if (authData && authData.access_token) {
             setName(authData.name);
         }
-    }, [authData, isSignedIn, setIsLoading, verifyAuthentication]);
-
+    }, [authData]);
+    
+    useEffect(() => {
+        if (!authData) {
+            navigate('/auth/login');
+        }
+    }, [authData, navigate]);
 
     useEffect(() => {
         if (rememberMe && authData && (authData.expires_in * 1000 > (Date.now()-86400))) {
@@ -86,13 +91,13 @@ const AuthProvider = ({children}: Props) => {
                     await signOut();
                 });
         }
-    }, [authData, refreshToken, rememberMe, setAuthData, signOut, verifyAuthentication]);
+    }, [authData, refreshToken, rememberMe, setAuthData, signOut]);
 
 
 
 
     return (
-        <AuthContextType.Provider value={{signIn, signOut, isSignedIn, name, rememberMe, setRememberMe, hasAnyRoles}}>
+        <AuthContextType.Provider value={{signIn, signOut, verifyAuthentication, name, rememberMe, setRememberMe, hasAnyRoles, authData}}>
             {children}
         </AuthContextType.Provider>
     );

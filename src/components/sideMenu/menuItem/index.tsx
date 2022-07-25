@@ -18,6 +18,7 @@ const MenuItem = ({icon, text, link} : Props) => {
     const theme = useTheme();
     const sm = useMediaQuery(theme.breakpoints.down("sm"));
 
+
     useEffect(() => {
         if (match) setMenuAtivo(text);
     }, [match, setMenuAtivo, text]);
