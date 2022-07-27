@@ -86,7 +86,7 @@ const PainelLayout = () => {
             >
                 <Toolbar />
                 <MyLoading />
-                <Container maxWidth="lg" sx={{ my: 4 }}>
+                <Container maxWidth="xl" sx={{ my: 4 }}>
                     <Outlet />
                 </Container>
                 <Copyright sx={{ pt: 4 }} />

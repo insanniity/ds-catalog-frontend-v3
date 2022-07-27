@@ -8,7 +8,7 @@ import {
     MenuItem,
     MenuList,
     Paper,
-    Popper
+    Popper, Typography
 } from "@mui/material";
 import {useAuth} from "contexts/AuthContext";
 import {useRef, useState} from "react";
@@ -41,6 +41,9 @@ const AuthMenu = () => {
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleToggle}
                 >
+                    <Typography sx={{mr:1}}>
+                        {name}
+                    </Typography>
                     <Avatar>{name[0]}</Avatar>
                 </Button>
             </ButtonGroup>
@@ -62,9 +65,6 @@ const AuthMenu = () => {
                         <Paper>
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MenuList id="split-button-menu" autoFocusItem sx={{minWidth: 100}}>
-                                        <MenuItem disabled={true}>
-                                            {name}
-                                        </MenuItem>
                                         <Divider />
                                         <MenuItem onClick={() => signOut()}>
                                             Sair

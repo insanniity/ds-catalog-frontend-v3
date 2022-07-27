@@ -62,7 +62,7 @@ const AuthProvider = ({children}: Props) => {
     }, [navigate, setAuthData, setIsLoading])
 
     const verifyAuthentication = ():boolean => {
-        if (authData.access_token) {
+        if (authData && authData.access_token) {
             const {exp} = jwt_decode<TokenDecoded>(authData.access_token);
             return (exp * 1000 > Date.now());
         }
