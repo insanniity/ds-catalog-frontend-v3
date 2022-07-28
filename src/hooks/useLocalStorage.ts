@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-const ls = {
+export const ls = {
     set: (key: string, value: any) => {
         if (typeof value === 'object') {
             value = JSON.stringify(value);

@@ -14,7 +14,7 @@ const MenuItem = ({icon, text, link} : Props) => {
     const {isOpen, setIsOpen, setMenuAtivo} = useConfig();
     const navigate = useNavigate();
     let resolved = useResolvedPath(link);
-    let match = useMatch({ path: resolved.pathname, end: true});
+    let match = useMatch({ path: resolved.pathname, end: false});
     const theme = useTheme();
     const sm = useMediaQuery(theme.breakpoints.down("sm"));
 

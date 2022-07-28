@@ -24,7 +24,7 @@ export const categorySlice = createSlice({
         getAll: (state, payload:PayloadAction<SpringPage<Category>>) => {
             state = payload.payload;
             return state;
-        }
+        },
     }
 });
 
@@ -36,12 +36,29 @@ export const useCategory = (state:any) => {
     return state.category as SpringPage<Category>;
 }
 
-export const getCategories = () => async (dispatch: any) => {
+export const getCategories = (page:number = 0, size: number = 20) => async (dispatch: any) => {
+    const config = {
+        params: {
+            page: page,
+            size: size
+        }
+    }
     try{
-        const res = await API.get(URL)
+        const res = await API.get(URL, config);
         dispatch(getAll(res.data));
     }
     catch(e){
-        toast.error("Error while getting categories")
+        toast.error("Erro ao obter categorias")
+    }
+}
+
+export const deleteCategory = (id:number) => async (dispatch: any) => {
+    try{
+        await API.delete(`${URL}/${id}`);
+        toast.success("Categoria excluída com sucesso");
+        dispatch(getCategories());
+    }
+    catch(e){
+        toast.error("Erro ao excluir a categoria")
     }
 }

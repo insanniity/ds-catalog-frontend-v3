@@ -1,8 +1,15 @@
 import axios, {AxiosRequestConfig} from "axios";
-import {BASE_URL} from "constants/auth";
+import {AUTH_KEY, BASE_URL} from "constants/auth";
+import {ls} from "hooks/useLocalStorage";
+import {LoginResponse} from "types/auth";
 
 
 const axiosInstance = axios.create({baseURL: BASE_URL});
+const authData = ls.get(AUTH_KEY) as LoginResponse;
+
+if (authData) {
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${authData.access_token}`;
+}
 
 export const API = {
     get: (url: string, config?: AxiosRequestConfig) => {
