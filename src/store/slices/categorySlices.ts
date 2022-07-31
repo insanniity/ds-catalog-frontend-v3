@@ -62,3 +62,14 @@ export const deleteCategory = (id:number) => async (dispatch: any) => {
         toast.error("Erro ao excluir a categoria")
     }
 }
+
+export const createCategory = (category:string) => async (dispatch: any) => {
+    try{
+        await API.post(URL, {name: category});
+        toast.success("Categoria criada com sucesso");
+        dispatch(getCategories());
+    }
+    catch(e){
+        toast.error("Erro ao criar a categoria")
+    }
+}

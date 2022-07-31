@@ -1,16 +1,16 @@
-import {Grid, TablePagination} from "@mui/material";
+import CardContainer from "components/cardContainer";
+import MySpeedDial from "components/speedDial";
+import {useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
-import {deleteCategory, getCategories, useCategory} from "store/slices/categorySlices";
+import {deleteUser, getUsers, useUser} from "store/slices/userSlices";
 import {useAppDispatch} from "store/store";
 import {useConfig} from "contexts/ConfigContext";
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import MySpeedDial from "components/speedDial";
-import CardContainer from "components/cardContainer";
-import CardCategory from "pages/painel/categories/components";
+import CardUser from "pages/painel/usuarios/components";
+import {Grid, TablePagination} from "@mui/material";
 
-const ListCategory = () => {
-    const pageItens = useSelector(useCategory)
+const ListUsers = () => {
+    const pageItens = useSelector(useUser)
     const dispatch = useAppDispatch()
     const {setIsLoading} = useConfig();
     const [page, setPage] = useState(0);
@@ -19,18 +19,22 @@ const ListCategory = () => {
 
     useEffect(() => {
         setIsLoading(true)
-        dispatch(getCategories(page, size)).finally(() => setIsLoading(false))
+        dispatch(getUsers(page, size)).finally(() => setIsLoading(false))
     }, [dispatch, page, setIsLoading, size])
 
     const handleDelete = (id: number) => {
         setIsLoading(true)
-        dispatch(deleteCategory(id)).finally(() => setIsLoading(false))
+        dispatch(deleteUser(id)).finally(() => setIsLoading(false))
+    }
+
+    const handleEdit = (id: number) => {
+        navigate(`/painel/users/edit/${id}`)
     }
 
     return (
         <CardContainer>
-            {pageItens.content.map(category => (
-                <CardCategory category={category} key={category.id} handleDelete={handleDelete} />
+            {pageItens.content.map(user => (
+                <CardUser user={user} key={user.id} handleDelete={handleDelete}  handleEdit={handleEdit}/>
             ))}
             <Grid item xs={12}>
                 <TablePagination
@@ -42,9 +46,9 @@ const ListCategory = () => {
                     onRowsPerPageChange={(event: any) => setSize(event.target.value)}
                 />
             </Grid>
-            <MySpeedDial action={() => navigate('/painel/categories/add')}/>
-        </ CardContainer>
+            <MySpeedDial action={() => navigate('/painel/users/add')}/>
+        </CardContainer>
     );
 }
 
-export default ListCategory;
+export default ListUsers;

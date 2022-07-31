@@ -2,28 +2,32 @@ import {ListItem, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, use
 import {useMatch, useNavigate, useResolvedPath} from "react-router-dom";
 import {useConfig} from "contexts/ConfigContext";
 import {ReactNode, useEffect} from "react";
+import {Authorities} from "types/auth";
+import {useAuth} from "contexts/AuthContext";
 
 type Props = {
     icon: ReactNode;
     text: string;
     link: string;
+    roles?: Authorities[];
 }
 
 
-const MenuItem = ({icon, text, link} : Props) => {
+const MenuItem = ({icon, text, link, roles = []} : Props) => {
     const {isOpen, setIsOpen, setMenuAtivo} = useConfig();
     const navigate = useNavigate();
     let resolved = useResolvedPath(link);
     let match = useMatch({ path: resolved.pathname, end: false});
     const theme = useTheme();
     const sm = useMediaQuery(theme.breakpoints.down("sm"));
+    const {hasAnyRoles} = useAuth();
 
 
     useEffect(() => {
         if (match) setMenuAtivo(text);
     }, [match, setMenuAtivo, text]);
 
-    return (
+    return roles && hasAnyRoles(roles) ? (
         <ListItem disablePadding sx={{display: "block", textDecoration: 'ImageListItem'}} onClick={() => {
             if(sm) setIsOpen(false);
             navigate(link)
@@ -48,7 +52,7 @@ const MenuItem = ({icon, text, link} : Props) => {
                 <ListItemText primary={text} sx={{opacity: isOpen ? 1 : 0}} />
             </ListItemButton>
         </ListItem>
-    );
+    ) : <></>;
 }
 
 export default MenuItem;

@@ -7,10 +7,6 @@ import {LoginResponse} from "types/auth";
 const axiosInstance = axios.create({baseURL: BASE_URL});
 const authData = ls.get(AUTH_KEY) as LoginResponse;
 
-if (authData) {
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${authData.access_token}`;
-}
-
 export const API = {
     get: (url: string, config?: AxiosRequestConfig) => {
         return axiosInstance.get(url, config);
@@ -25,3 +21,29 @@ export const API = {
         return axiosInstance.delete(url, config);
     },
 }
+
+// Add a request interceptor
+axiosInstance.interceptors.request.use(function (config) {
+    if (authData && authData.access_token && config) {
+        config.headers = {
+            ...config.headers,
+            'Authorization': `Bearer ${authData.access_token}`,
+        }
+        // axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${authData.access_token}`;
+    }
+    // Do something before request is sent
+    return config;
+}, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+});
+
+// Add a response interceptor
+axiosInstance.interceptors.response.use(function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response;
+}, function (error) {
+    // if(error.response.status === 401) history.push('/auth/login');
+    return Promise.reject(error);
+});

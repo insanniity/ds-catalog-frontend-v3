@@ -1,9 +1,13 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit'
 import {useDispatch} from "react-redux";
 import categoryReducer from "store/slices/categorySlices";
+import userReducer from "store/slices/userSlices";
+import roleReducer from "store/slices/roleSlices";
 
 const rootReducer = combineReducers({
-    category: categoryReducer
+    category: categoryReducer,
+    user: userReducer,
+    role: roleReducer,
 })
 
 
