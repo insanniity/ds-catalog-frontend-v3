@@ -3,6 +3,7 @@ import List from "@mui/material/List";
 import MenuItem from "components/sideMenu/menuItem";
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import GroupIcon from '@mui/icons-material/Group';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 
 const SideMenu = () => {
     return (
@@ -10,6 +11,7 @@ const SideMenu = () => {
             <MenuItem icon={<DashboardIcon />} text="Dashboard" link="/painel/home" roles={["ROLE_ADMIN", "ROLE_OPERATOR"]}/>
             <MenuItem icon={<GroupIcon />} text="Usuarios" link="/painel/users" roles={["ROLE_ADMIN"]} />
             <MenuItem icon={<LocalOfferIcon />} text="Categorias" link="/painel/categories" roles={["ROLE_ADMIN", "ROLE_OPERATOR"]} />
+            <MenuItem icon={<ShoppingBagIcon />} text="Produtos" link="/painel/products" roles={["ROLE_ADMIN", "ROLE_OPERATOR"]} />
         </List>
     )
 }

@@ -3,11 +3,13 @@ import {useDispatch} from "react-redux";
 import categoryReducer from "store/slices/categorySlices";
 import userReducer from "store/slices/userSlices";
 import roleReducer from "store/slices/roleSlices";
+import productReducer from "store/slices/productSlices";
 
 const rootReducer = combineReducers({
     category: categoryReducer,
     user: userReducer,
     role: roleReducer,
+    product: productReducer,
 })
 
 

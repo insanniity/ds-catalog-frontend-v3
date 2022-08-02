@@ -11,7 +11,7 @@ type FormState = {
 }
 
 const FormLogin = () => {
-    const {register,handleSubmit,formState: {errors}} = useForm<FormState>({defaultValues: {username: 'alex@gmail.com', password: '123456'}});
+    const {register,handleSubmit,formState: {errors}} = useForm<FormState>({defaultValues: {username: 'maria@gmail.com', password: '123456'}});
     const {isLoading} = useConfig();
     const {signIn, setRememberMe, rememberMe} = useAuth();
 

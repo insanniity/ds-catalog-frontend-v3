@@ -6,7 +6,7 @@ import {deleteUser, getUsers, useUser} from "store/slices/userSlices";
 import {useAppDispatch} from "store/store";
 import {useConfig} from "contexts/ConfigContext";
 import {useEffect, useState} from "react";
-import CardUser from "pages/painel/usuarios/components";
+import CardUser from "pages/painel/usuarios/components/cardUser";
 import {Grid, TablePagination} from "@mui/material";
 
 const ListUsers = () => {

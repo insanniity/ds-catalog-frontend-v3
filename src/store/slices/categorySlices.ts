@@ -1,8 +1,8 @@
-import {Category} from "types/category";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {API} from "services/Api";
-import {toast} from "react-toastify";
-import {SpringPage} from "types/springpage";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+import { API } from "services/Api";
+import { Category } from "types/category";
+import { SpringPage } from "types/springpage";
 
 export const URL = "/categories"
 
@@ -17,6 +17,7 @@ const initialState: SpringPage<Category> = {
     empty:true,
 };
 
+
 export const categorySlice = createSlice({
     name: 'category',
     initialState,
@@ -25,7 +26,7 @@ export const categorySlice = createSlice({
             state = payload.payload;
             return state;
         },
-    }
+    },
 });
 
 export default categorySlice.reducer;

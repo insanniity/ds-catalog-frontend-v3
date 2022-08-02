@@ -1,13 +1,13 @@
-import {Grid, TablePagination} from "@mui/material";
-import {useSelector} from "react-redux";
-import {deleteCategory, getCategories, useCategory} from "store/slices/categorySlices";
-import {useAppDispatch} from "store/store";
-import {useConfig} from "contexts/ConfigContext";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import MySpeedDial from "components/speedDial";
+import { Grid, TablePagination } from "@mui/material";
 import CardContainer from "components/cardContainer";
-import CardCategory from "pages/painel/categories/components";
+import MySpeedDial from "components/speedDial";
+import { useConfig } from "contexts/ConfigContext";
+import CardCategory from "pages/painel/categories/components/cardCategory";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { deleteCategory, getCategories, useCategory } from "store/slices/categorySlices";
+import { useAppDispatch } from "store/store";
 
 const ListCategory = () => {
     const pageItens = useSelector(useCategory)
