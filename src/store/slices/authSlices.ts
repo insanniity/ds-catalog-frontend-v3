@@ -10,11 +10,6 @@ import {ls} from "hooks/useLocalStorage";
 
 const url = "/oauth";
 
-const headers = {
-    'Content-type': 'application/x-www-form-urlencoded',
-    'Authorization': `Basic ${window.btoa(CLIENT_ID + ':' + CLIENT_SECRET)}`
-}
-
 const initialState:LoginResponse = {
     access_token: null,
     token_type: null,
@@ -34,6 +29,7 @@ export const authSlice = createSlice({
             return  action.payload;
         },
         logout: () => {
+            localStorage.clear();
             return initialState;
         },
         setAuthenticated: (state, action:PayloadAction<boolean>) => {
@@ -56,6 +52,11 @@ export const login = (username:string, password:string) => async (dispatch: any)
         password,
         grant_type: 'password',
     });
+
+    const headers = {
+        'Content-type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${window.btoa(CLIENT_ID + ':' + CLIENT_SECRET)}`
+    }
     try{
         const response = await API.post(`${url}/token`, data, {headers})
         dispatch(setCredentials({...response.data, authenticated: isAuthenticated(response.data.access_token)}));
