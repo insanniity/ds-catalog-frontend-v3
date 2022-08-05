@@ -1,5 +1,5 @@
 import Login from 'pages/auth/login';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Navigate, Route, Routes} from "react-router-dom";
 import AuthLayout from "components/authLayout";
 import Home from "pages/painel/home";
@@ -13,12 +13,32 @@ import HasPermissao from "pages/painel";
 import ListProducts from './pages/painel/products/list/index';
 import AddProduct from 'pages/painel/products/add';
 import EditProduct from 'pages/painel/products/edit';
+import SiteLayout from "components/siteLayout";
+import HomeSite from "pages/site/home";
+import Catalogo from "pages/site/catalogo";
+import {useAppDispatch} from "store/store";
+import {AUTH_KEY} from "constants/auth";
+import {ls} from "hooks/useLocalStorage";
+import {setCredentials} from "store/slices/authSlices";
 
 
 function App() {
+    const dispatch = useAppDispatch();
+    const auth = ls.get(AUTH_KEY);
+
+    useEffect(() => {
+        if (auth) {
+            dispatch(setCredentials(auth));
+        }
+    } , [auth, dispatch]);
+
+
     return (
         <Routes>
-            <Route path="/" element={<Navigate to={"/auth/login"}/>}/>
+            <Route path="/" element={<SiteLayout/>}>
+                <Route index element={<HomeSite />}/>
+                <Route path="catalogo" element={<Catalogo />}/>
+            </Route>
             <Route path="/auth" element={<AuthLayout/>}>
                 <Route index element={<Navigate to={"/auth/login"}/>}/>
                 <Route path="login" element={<Login/>}/>

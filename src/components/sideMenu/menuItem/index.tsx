@@ -3,7 +3,8 @@ import {useMatch, useNavigate, useResolvedPath} from "react-router-dom";
 import {useConfig} from "contexts/ConfigContext";
 import {ReactNode, useEffect} from "react";
 import {Authorities} from "types/auth";
-import {useAuth} from "contexts/AuthContext";
+import {useSelector} from "react-redux";
+import {hasAuthority} from "store/slices/authSlices";
 
 type Props = {
     icon: ReactNode;
@@ -20,14 +21,13 @@ const MenuItem = ({icon, text, link, roles = []} : Props) => {
     let match = useMatch({ path: resolved.pathname, end: false});
     const theme = useTheme();
     const sm = useMediaQuery(theme.breakpoints.down("sm"));
-    const {hasAnyRoles} = useAuth();
-
+    const hasRole = useSelector(state => hasAuthority(state, roles));
 
     useEffect(() => {
         if (match) setMenuAtivo(text);
     }, [match, setMenuAtivo, text]);
 
-    return roles && hasAnyRoles(roles) ? (
+    return roles && hasRole  ? (
         <ListItem disablePadding sx={{display: "block", textDecoration: 'ImageListItem'}} onClick={() => {
             if(sm) setIsOpen(false);
             navigate(link)

@@ -1,10 +1,11 @@
 export type LoginResponse = {
-    access_token: string;
-    token_type: string;
-    refresh_token: string;
-    expires_in: number;
-    scope: string;
-    name: string;
+    access_token: null|string;
+    token_type: null|string;
+    refresh_token: null|string;
+    expires_in: null|number;
+    scope: null|string;
+    name: null|string;
+    authenticated: boolean;
 }
 
 export type TokenDecoded = {

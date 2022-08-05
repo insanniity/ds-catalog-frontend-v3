@@ -8,16 +8,21 @@ import {
     MenuItem,
     MenuList,
     Paper,
-    Popper, Typography
+    Popper,
+    Typography
 } from "@mui/material";
-import {useAuth} from "contexts/AuthContext";
 import {useRef, useState} from "react";
+import {useSelector} from "react-redux";
+import {logout, useAuth} from "store/slices/authSlices";
+import {useAppDispatch} from "store/store";
 
 
 const AuthMenu = () => {
-    const {name, signOut} = useAuth();
     const [open, setOpen] = useState(false);
     const anchorRef = useRef<HTMLDivElement>(null);
+    const auth = useSelector(useAuth);
+    const dispatch = useAppDispatch()
+
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -32,6 +37,11 @@ const AuthMenu = () => {
         }
         setOpen(false);
     };
+
+    const signOut = () => {
+        dispatch(logout())
+    }
+
     return (
         <>
             <ButtonGroup variant="contained" disableElevation  ref={anchorRef} aria-label="split button">
@@ -42,9 +52,9 @@ const AuthMenu = () => {
                     onClick={handleToggle}
                 >
                     <Typography sx={{mr:1}}>
-                        {name}
+                        {auth.name}
                     </Typography>
-                    <Avatar>{name[0]}</Avatar>
+                    <Avatar>{auth.name && auth.name[0]}</Avatar>
                 </Button>
             </ButtonGroup>
             <Popper

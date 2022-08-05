@@ -42,7 +42,7 @@ const CardProduct = ({ product, handleDelete, handleEdit }:Props) => {
                                     <b>Data:</b> {Formatadores.data(product.date)}
                                 </Typography>
                                 <Typography variant="body2">
-                                    <b>Categorias:</b> {product.categories.map(cat => <Chip label={cat} key={cat} color="primary" variant="outlined" sx={{mr:1}} size={"small"}/>)}
+                                    <b>Categorias:</b> {product.categories.map(cat => (<Chip component={"span"} label={cat} key={cat} color="primary" variant="outlined" sx={{mr:1}} size={"small"} />))}
                                 </Typography>
                             </Grid>
                         </Grid>

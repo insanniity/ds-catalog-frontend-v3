@@ -7,18 +7,14 @@ import {theme} from "assets/theme";
 import {BrowserRouter} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import ConfigProvider from "contexts/ConfigContext";
-import AuthProvider from "contexts/AuthContext";
 import { Provider } from 'react-redux'
 import {store} from "store/store";
-
-
 
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
         <BrowserRouter>
             <ConfigProvider>
-                <AuthProvider>
                     <ThemeProvider theme={theme}>
                         <Provider store={store}>
                             <CssBaseline/>
@@ -37,7 +33,6 @@ root.render(
                             />
                         </Provider>
                     </ThemeProvider>
-                </AuthProvider>
             </ConfigProvider>
         </BrowserRouter>
 );

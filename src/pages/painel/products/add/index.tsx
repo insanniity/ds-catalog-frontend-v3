@@ -4,7 +4,8 @@ import {
     Button,
     Chip,
     FormControl,
-    Grid, InputAdornment,
+    Grid,
+    InputAdornment,
     InputLabel,
     MenuItem,
     OutlinedInput,
@@ -14,7 +15,7 @@ import {
 } from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
 import {useSelector} from "react-redux";
-import {createProduct, useProduct} from "store/slices/productSlices";
+import {createProduct} from "store/slices/productSlices";
 import {getCategories, useCategory} from "store/slices/categorySlices";
 import {useAppDispatch} from "store/store";
 import {useConfig} from "contexts/ConfigContext";

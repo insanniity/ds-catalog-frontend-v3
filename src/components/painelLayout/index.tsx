@@ -7,24 +7,26 @@ import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Copyright from "components/copyrights";
-import {Navigate, Outlet} from "react-router-dom";
+import {Navigate, Outlet, useLocation} from "react-router-dom";
 import {AppBar, Drawer} from "assets/styled"
 import SideMenu from "components/sideMenu";
 import {useConfig} from "contexts/ConfigContext";
 import MyLoading from "components/myLoading";
 import AuthMenu from "components/authMenu";
-import {useAuth} from "contexts/AuthContext";
+import {useSelector} from "react-redux";
+import {useAuth} from "store/slices/authSlices";
 
 
 const PainelLayout = () => {
     const {isOpen, setIsOpen, menuAtivo} = useConfig();
-    const {verifyAuthentication} = useAuth();
+    const auth = useSelector(useAuth);
+    const location = useLocation();
 
     const toggleDrawer = () => {
         setIsOpen(!isOpen);
     };
 
-    return !verifyAuthentication() ? <Navigate to={"/auth/login"} replace/> :(
+    return !auth.authenticated ? <Navigate to={"/auth/login"} state={{ from: location }} replace/> :(
         <Box sx={{ display: 'flex' }}>
             <AppBar position="absolute" open={isOpen}>
                 <Toolbar

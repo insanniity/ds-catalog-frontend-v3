@@ -1,13 +1,28 @@
 import {Grid, Paper} from "@mui/material";
-import {Navigate, Outlet} from "react-router-dom";
+import {Navigate, Outlet, useLocation} from "react-router-dom";
 import React from "react";
-import {useAuth} from "contexts/AuthContext";
+import {useSelector} from "react-redux";
+import {useAuth} from "store/slices/authSlices";
 
+type States = {
+    from: {
+        pathname: string;
+        hash: string;
+        search: string;
+        key: string;
+        state: any;
+    };
+}
 
 const AuthLayout = () => {
-    const {verifyAuthentication} = useAuth();
+    const auth = useSelector(useAuth);
+    const location = useLocation();
+    const {from} = location.state as States;
+    const fromLocation = from ? from.pathname : "/painel/home";
+    // const { from } = location.state || { from: { pathname: "/admin" } };
+    // const from =  "/painel/home"
 
-    return verifyAuthentication() ? <Navigate to={"/painel/home"} replace /> : (
+    return auth.authenticated ? <Navigate to={fromLocation} replace /> : (
         <>
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <Grid

@@ -1,8 +1,12 @@
-import {Box, Button, Checkbox, FormControlLabel, TextField} from "@mui/material";
+import {Box, Button, TextField} from "@mui/material";
 import {useForm} from "react-hook-form";
 import {useConfig} from "contexts/ConfigContext";
 import CircularProgress from '@mui/material/CircularProgress';
-import {useAuth} from "contexts/AuthContext";
+import {useAppDispatch} from "store/store";
+
+import {login} from "store/slices/authSlices";
+import {useLocation, useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 
 type FormState = {
@@ -12,12 +16,20 @@ type FormState = {
 
 const FormLogin = () => {
     const {register,handleSubmit,formState: {errors}} = useForm<FormState>({defaultValues: {username: 'maria@gmail.com', password: '123456'}});
-    const {isLoading} = useConfig();
-    const {signIn, setRememberMe, rememberMe} = useAuth();
-
+    const {isLoading, setIsLoading} = useConfig();
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const onSubmit = ({username, password}: FormState) => {
-        signIn(username, password);
+        try {
+            setIsLoading(true);
+            dispatch(login(username, password)).finally(() => setIsLoading(false));
+            navigate('/painel/home', {replace: true, state: {from: location}});
+        }catch (e:any) {
+            toast.error(e);
+        }
+        // signIn(username, password);
     };
 
     return isLoading ?
@@ -49,14 +61,14 @@ const FormLogin = () => {
                     error={!!errors.password}
                     helperText={errors.password?.message}
                 />
-                <FormControlLabel
-                    control={<Checkbox color="primary"/>}
-                    label="Lembrar me"
-                    value={rememberMe}
-                    onClick={(e:any) => {
-                        setRememberMe(e.target.checked)
-                    }}
-                />
+                {/*<FormControlLabel*/}
+                {/*    control={<Checkbox color="primary"/>}*/}
+                {/*    label="Lembrar me"*/}
+                {/*    value={rememberMe}*/}
+                {/*    onClick={(e:any) => {*/}
+                {/*        setRememberMe(e.target.checked)*/}
+                {/*    }}*/}
+                {/*/>*/}
                 <Button
                     type="submit"
                     fullWidth
