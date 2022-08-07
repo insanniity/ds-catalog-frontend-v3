@@ -17,8 +17,8 @@ type States = {
 const AuthLayout = () => {
     const auth = useSelector(useAuth);
     const location = useLocation();
-    const {from} = location.state as States;
-    const fromLocation = from ? from.pathname : "/painel/home";
+    const state = location?.state as States;
+    const fromLocation = state?.from?.pathname ? state.from.pathname : "/painel/home";
     // const { from } = location.state || { from: { pathname: "/admin" } };
     // const from =  "/painel/home"
 

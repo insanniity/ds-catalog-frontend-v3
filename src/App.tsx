@@ -20,6 +20,7 @@ import {useAppDispatch} from "store/store";
 import {AUTH_KEY} from "constants/auth";
 import {ls} from "hooks/useLocalStorage";
 import {setCredentials} from "store/slices/authSlices";
+import Produto from "pages/site/produto";
 
 
 function App() {
@@ -38,6 +39,8 @@ function App() {
             <Route path="/" element={<SiteLayout/>}>
                 <Route index element={<HomeSite />}/>
                 <Route path="catalogo" element={<Catalogo />}/>
+                <Route path="produto" element={<Navigate to={"/catalogo"}/>}/>
+                <Route path="produto/:id" element={<Produto />}/>
             </Route>
             <Route path="/auth" element={<AuthLayout/>}>
                 <Route index element={<Navigate to={"/auth/login"}/>}/>
